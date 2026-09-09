@@ -1,0 +1,221 @@
+import React, { useState, useEffect } from 'react';
+import { Plus, Trash2, Check } from 'lucide-react';
+import '../styles/ReminderScreen.css';
+import Navigation from '../components/Navigation';
+
+function ReminderScreen({ patient }) {
+  const [reminders, setReminders] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [notificationPopup, setNotificationPopup] = useState(null);
+  const [notifiedReminders, setNotifiedReminders] = useState(new Set());
+  const [formData, setFormData] = useState({
+    name: '',
+    time: '',
+    description: ''
+  });
+
+  useEffect(() => {
+    // Load reminders from localStorage
+    const savedReminders = localStorage.getItem('reminders');
+    if (savedReminders) {
+      setReminders(JSON.parse(savedReminders));
+    }
+  }, []);
+
+  // Check reminders every minute
+  useEffect(() => {
+    const checkReminders = () => {
+      const now = new Date();
+      const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+      reminders.forEach(reminder => {
+        if (reminder.time === currentTime && !reminder.completed && !notifiedReminders.has(reminder.id)) {
+          setNotificationPopup(reminder);
+          setNotifiedReminders(prev => new Set([...prev, reminder.id]));
+        }
+      });
+    };
+
+    checkReminders();
+    const interval = setInterval(checkReminders, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, [reminders, notifiedReminders]);
+
+  const closeNotification = () => {
+    setNotificationPopup(null);
+  };
+
+  const saveReminders = (newReminders) => {
+    localStorage.setItem('reminders', JSON.stringify(newReminders));
+    setReminders(newReminders);
+  };
+
+  const handleAddReminder = (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.time) {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    const newReminder = {
+      id: Date.now(),
+      name: formData.name,
+      time: formData.time,
+      description: formData.description,
+      completed: false,
+      createdAt: new Date().toISOString()
+    };
+
+    const updatedReminders = [...reminders, newReminder];
+    saveReminders(updatedReminders);
+    setFormData({ name: '', time: '', description: '' });
+    setShowForm(false);
+  };
+
+  const handleCompleteReminder = (id) => {
+    const updatedReminders = reminders.map(r =>
+      r.id === id ? { ...r, completed: !r.completed } : r
+    );
+    saveReminders(updatedReminders);
+  };
+
+  const handleDeleteReminder = (id) => {
+    const updatedReminders = reminders.filter(r => r.id !== id);
+    saveReminders(updatedReminders);
+  };
+
+  return (
+    <div className="reminder-page">
+      <div className="reminder-container">
+        <div className="reminder-content">
+          <div className="reminder-header">
+            <h1 className="page-title">Daily Reminders</h1>
+            <p className="page-subtitle">Stay on track with your tasks</p>
+          </div>
+
+          <div className="reminder-stats">
+            <div className="stat-box">
+              <span className="stat-number">{reminders.length}</span>
+              <span className="stat-label">Total</span>
+            </div>
+            <div className="stat-box completed">
+              <span className="stat-number">{reminders.filter(r => r.completed).length}</span>
+              <span className="stat-label">Completed</span>
+            </div>
+            <div className="stat-box pending">
+              <span className="stat-number">{reminders.filter(r => !r.completed).length}</span>
+              <span className="stat-label">Pending</span>
+            </div>
+          </div>
+
+          {!showForm && (
+            <button className="add-reminder-btn" onClick={() => setShowForm(true)}>
+              <Plus size={32} />
+              Add New Reminder
+            </button>
+          )}
+
+          {showForm && (
+            <form className="reminder-form" onSubmit={handleAddReminder}>
+              <input
+                type="text"
+                placeholder="Reminder name (e.g., Take Medicine)"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="form-input"
+              />
+              <input
+                type="time"
+                value={formData.time}
+                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                className="form-input"
+              />
+              <textarea
+                placeholder="Description (optional)"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                className="form-textarea"
+                rows="3"
+              />
+              <div className="form-buttons">
+                <button type="submit" className="btn-submit">Save Reminder</button>
+                <button type="button" className="btn-cancel" onClick={() => setShowForm(false)}>Cancel</button>
+              </div>
+            </form>
+          )}
+
+          <div className="reminders-list">
+            {reminders.length === 0 ? (
+              <div className="empty-state">
+                <p>No reminders yet. Add one to get started!</p>
+              </div>
+            ) : (
+              reminders.map(reminder => (
+                <div key={reminder.id} className={`reminder-item ${reminder.completed ? 'completed' : ''}`}>
+                  <div className="reminder-info">
+                    <div className="reminder-time">{reminder.time}</div>
+                    <div className="reminder-details">
+                      <h3 className="reminder-name">{reminder.name}</h3>
+                      {reminder.description && (
+                        <p className="reminder-description">{reminder.description}</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="reminder-actions">
+                    <button
+                      className={`action-btn complete-btn ${reminder.completed ? 'done' : ''}`}
+                      onClick={() => handleCompleteReminder(reminder.id)}
+                      title={reminder.completed ? 'Mark as incomplete' : 'Mark as complete'}
+                    >
+                      <Check size={24} />
+                    </button>
+                    <button
+                      className="action-btn delete-btn"
+                      onClick={() => handleDeleteReminder(reminder.id)}
+                      title="Delete reminder"
+                    >
+                      <Trash2 size={24} />
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+
+      {notificationPopup && (
+        <div className="notification-overlay">
+          <div className="notification-popup">
+            <div className="notification-header">
+              <h2 className="notification-title">⏰ Reminder Alert!</h2>
+            </div>
+            <div className="notification-content">
+              <h3 className="notification-reminder-name">{notificationPopup.name}</h3>
+              <p className="notification-time">Time: {notificationPopup.time}</p>
+              {notificationPopup.description && (
+                <p className="notification-description">{notificationPopup.description}</p>
+              )}
+            </div>
+            <div className="notification-buttons">
+              <button className="btn-notification-done" onClick={() => {
+                handleCompleteReminder(notificationPopup.id);
+                closeNotification();
+              }}>
+                ✓ Done
+              </button>
+              <button className="btn-notification-close" onClick={closeNotification}>
+                Dismiss
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Navigation />
+    </div>
+  );
+}
+
+export default ReminderScreen;

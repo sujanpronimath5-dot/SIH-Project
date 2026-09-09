@@ -1,0 +1,165 @@
+.link-patient-page {
+  min-height: 100vh;
+  background: var(--bg, #fdf6ec);
+  color: #3a2e26;
+  padding: 24px 16px 60px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.link-patient-header {
+  margin-bottom: 20px;
+}
+
+.link-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: #8a7a6e;
+  font-size: 14px;
+  padding: 6px 0;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.link-title {
+  margin: 0 0 6px;
+  font-size: 26px;
+}
+
+.link-subtitle {
+  margin: 0;
+  color: #8a7a6e;
+}
+
+.link-error {
+  background: #fdecea;
+  border: 1px solid #f5c6bd;
+  color: #a3311d;
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.link-success {
+  background: #e8f6e8;
+  border: 1px solid #b9e0b9;
+  color: #2e7d32;
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.link-form {
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 24px;
+}
+
+.link-form label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.link-form input {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #d8c9bb;
+  font-size: 16px;
+}
+
+.link-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 10px;
+  background: #d85a30;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.link-button:disabled {
+  opacity: 0.6;
+}
+
+.link-list-section h2 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.link-muted {
+  color: #8a7a6e;
+}
+
+.link-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 16px;
+  color: #8a7a6e;
+  text-align: center;
+}
+
+.link-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.link-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.link-item:hover {
+  border-color: #d85a30;
+}
+
+.link-item-icon {
+  color: #2e7d32;
+  flex-shrink: 0;
+}
+
+.link-item-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.link-item-main span {
+  font-size: 13px;
+  color: #8a7a6e;
+}
+
+.link-item-opens {
+  color: #d85a30;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

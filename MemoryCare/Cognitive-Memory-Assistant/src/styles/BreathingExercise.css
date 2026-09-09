@@ -1,0 +1,187 @@
+/* Breathing Exercise Screen Styles (matches GamePart_MemoryCare reference) */
+.breathing-page {
+  min-height: 100vh;
+  background: #fdf6ec;
+  color: #3b3b3f;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 20px;
+  line-height: 1.4;
+  padding-bottom: 100px;
+}
+
+.breathing-page .breathing-header {
+  background: #d85a30;
+  color: #ffffff;
+  padding: 16px;
+  padding-top: max(16px, env(safe-area-inset-top, 0px));
+  text-align: center;
+}
+
+.breathing-page .breathing-header h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 650;
+}
+
+.breathing-page .header-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.breathing-page .btn {
+  background: #d85a30;
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 24px;
+  font-size: 20px;
+  font-weight: 650;
+  min-height: 56px;
+  font-family: inherit;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+.breathing-page .btn:hover,
+.breathing-page .btn:focus-visible {
+  background: #e28364;
+}
+
+.breathing-page .btn.btn-light {
+  background: #ffffff;
+  color: #d85a30;
+  border: 2px solid #ffffff;
+}
+
+.breathing-page .btn.btn-light:hover,
+.breathing-page .btn.btn-light:focus-visible {
+  background: #faece7;
+  color: #3b3b3f;
+}
+
+.breathing-page .breathing-screen {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 24px 18px 40px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.breathing-page .breathing-instruction {
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0;
+  margin-bottom: 22px;
+  font-size: 22px;
+  line-height: 1.6;
+  color: #59595d;
+  text-align: center;
+}
+
+.breathing-page .breathing-session-options {
+  display: grid;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.breathing-page .breathing-circle {
+  width: min(72vw, 300px);
+  aspect-ratio: 1;
+  margin: 14px auto 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #e28364;
+  border: 12px solid #d85a30;
+  box-shadow: 0 0 0 18px #faece7;
+  transition: transform 4s ease-in-out, background-color 4s ease-in-out;
+}
+
+.breathing-page .breathing-circle.breathing-in {
+  transform: scale(1.08);
+  background: #d85a30;
+  transition-duration: 4s;
+}
+
+.breathing-page .breathing-circle.breathing-hold {
+  transform: scale(1.08);
+  background: #d85a30;
+  transition: none;
+}
+
+.breathing-page .breathing-circle.breathing-out {
+  transform: scale(0.86);
+  background: #e28364;
+  transition-duration: 8s;
+}
+
+.breathing-page .breathing-phase {
+  margin: 0;
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.breathing-page .breathing-controls {
+  display: grid;
+  gap: 10px;
+}
+
+.breathing-page .breathing-stop {
+  width: 100%;
+  background: #3b3b3f;
+}
+
+.breathing-page .breathing-stop:hover,
+.breathing-page .breathing-stop:focus-visible {
+  background: #59595d;
+}
+
+.breathing-page .breathing-complete {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  padding-top: 70px;
+  text-align: center;
+}
+
+.breathing-page .breathing-complete h2,
+.breathing-page .breathing-complete p {
+  margin: 0;
+}
+
+.breathing-page .breathing-rest-icon {
+  color: #d85a30;
+  font-size: 100px;
+  line-height: 1;
+}
+
+.breathing-page .breathing-complete .btn {
+  width: 100%;
+  margin-top: 18px;
+}
+
+@media (max-width: 480px) {
+  .breathing-page {
+    font-size: 18px;
+  }
+
+  .breathing-page .breathing-header h1 {
+    font-size: 22px;
+  }
+
+  .breathing-page .breathing-screen {
+    padding: 16px 14px 32px;
+  }
+
+  .breathing-page .btn {
+    min-height: 52px;
+    padding: 14px 18px;
+    font-size: 18px;
+  }
+}
