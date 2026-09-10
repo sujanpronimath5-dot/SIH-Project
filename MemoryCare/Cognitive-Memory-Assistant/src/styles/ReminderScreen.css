@@ -27,6 +27,28 @@
   margin-bottom: var(--spacing-xl);
   box-shadow: 0 4px 15px rgba(216, 90, 48, 0.2);
   text-align: center;
+  position: relative;
+}
+
+.offline-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--spacing-sm);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.offline-badge.online {
+  background: rgba(255, 255, 255, 0.2);
+  color: #E8F5E9;
+}
+
+.offline-badge.offline {
+  background: rgba(255, 235, 59, 0.25);
+  color: #FFF9C4;
 }
 
 .page-title {

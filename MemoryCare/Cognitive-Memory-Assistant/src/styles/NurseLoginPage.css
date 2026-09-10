@@ -1,0 +1,318 @@
+/* Nurse Login Page Styles */
+.nurse-login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #D85A30 0%, #B84820 100%);
+  padding: var(--spacing-lg) var(--spacing-md);
+}
+
+.nurse-login-card {
+  width: 100%;
+  max-width: 540px;
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl) var(--spacing-xl);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+  position: relative;
+  animation: nurseSlideUp 0.5s ease-out;
+}
+
+.nurse-login-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: var(--border-radius-sm);
+  margin-bottom: var(--spacing-md);
+  transition: all var(--transition-fast);
+}
+
+.nurse-login-back:hover {
+  color: #B84820;
+  background: rgba(216, 90, 48, 0.08);
+}
+
+.nurse-login-header {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.nurse-icon-badge {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FAECE7 0%, #F5D3C7 100%);
+  color: #B84820;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--spacing-md);
+  box-shadow: 0 4px 12px rgba(216, 90, 48, 0.2);
+}
+
+.nurse-login-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: #B84820;
+  margin-bottom: 6px;
+}
+
+.nurse-login-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--text-light);
+  line-height: 1.4;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+/* Auth Mode Tabs */
+.nurse-auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--light-bg);
+  padding: 4px;
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-lg);
+  border: 1px solid var(--border-color);
+}
+
+.nurse-auth-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: calc(var(--border-radius-md) - 4px);
+  background: transparent;
+  color: var(--text-light);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.nurse-auth-tab.active {
+  background: var(--white);
+  color: #B84820;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Alerts */
+.nurse-login-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.4;
+}
+
+.nurse-login-alert.error {
+  background: #FDF2F2;
+  border: 1px solid #F8B4B4;
+  color: #9B1C1C;
+}
+
+.nurse-login-alert.success {
+  background: #F3FAF7;
+  border: 1px solid #84E1BC;
+  color: #0E9F6E;
+}
+
+/* Form Styles */
+.nurse-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.nurse-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nurse-form label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.nurse-form input,
+.nurse-form select {
+  width: 100%;
+  padding: 11px 14px;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-md);
+  font-family: inherit;
+  color: var(--text-dark);
+  background: var(--white);
+  transition: all var(--transition-fast);
+}
+
+.nurse-form input:focus,
+.nurse-form select:focus {
+  border-color: #D85A30;
+  box-shadow: 0 0 0 3px rgba(216, 90, 48, 0.15);
+  outline: none;
+}
+
+/* Dual Patient ID Selection & Typing */
+.patient-select-wrapper {
+  margin-bottom: 6px;
+}
+
+.patient-dropdown-select {
+  cursor: pointer;
+  background-color: #FAFAF9 !important;
+}
+
+.patient-type-wrapper input {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* PIN Input Styles */
+.pin-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nurse-form .pin-input {
+  letter-spacing: 8px;
+  font-weight: 700;
+  font-size: var(--font-size-lg) !important;
+  text-align: center;
+  padding-right: 44px !important;
+}
+
+.nurse-form .pin-input.match {
+  border-color: #31C48D !important;
+  background: #F3FAF7;
+}
+
+.nurse-form .pin-input.mismatch {
+  border-color: #F98080 !important;
+  background: #FDF2F2;
+}
+
+.nurse-form .pin-visibility-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.nurse-form .pin-visibility-btn:hover {
+  color: var(--text-dark);
+}
+
+.field-hint {
+  font-size: var(--font-size-xs);
+  color: var(--text-light);
+}
+
+.field-error-text {
+  font-size: var(--font-size-xs);
+  color: #C81E1E;
+  font-weight: 600;
+}
+
+.field-success-text {
+  font-size: var(--font-size-xs);
+  color: #0E9F6E;
+  font-weight: 600;
+}
+
+/* Submit Button */
+.nurse-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #D85A30 0%, #B84820 100%);
+  color: var(--white);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  margin-top: var(--spacing-sm);
+  box-shadow: 0 4px 14px rgba(216, 90, 48, 0.35);
+  transition: all var(--transition-normal);
+}
+
+.nurse-submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #E28364 0%, #D85A30 100%);
+  box-shadow: 0 6px 20px rgba(216, 90, 48, 0.45);
+  transform: translateY(-2px);
+}
+
+.nurse-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.nurse-login-footer {
+  text-align: center;
+  margin-top: var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  color: var(--text-light);
+}
+
+.link-switch-btn {
+  background: none;
+  border: none;
+  color: #B84820;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0 2px;
+}
+
+.link-switch-btn:hover {
+  color: #D85A30;
+}
+
+@keyframes nurseSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .nurse-login-card {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+  .nurse-login-title {
+    font-size: var(--font-size-xl);
+  }
+}

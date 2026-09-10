@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Check } from 'lucide-react';
+import { Plus, Trash2, Check, Wifi, WifiOff } from 'lucide-react';
 import '../styles/ReminderScreen.css';
 import Navigation from '../components/Navigation';
+import TopBackButton from '../components/TopBackButton';
+import { syncRemindersToSW, cancelReminderInSW, triggerReminderNotification, getOnlineStatus, isNative, syncRemindersToNative, cancelNativeReminder, requestNotificationPermissions } from '../services/pwa';
 
 function ReminderScreen({ patient }) {
   const [reminders, setReminders] = useState([]);
@@ -13,14 +15,47 @@ function ReminderScreen({ patient }) {
     time: '',
     description: ''
   });
+  const [isOnline, setIsOnline] = useState(getOnlineStatus());
 
   useEffect(() => {
-    // Load reminders from localStorage
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Request native notification permission (Android) and load reminders
     const savedReminders = localStorage.getItem('reminders');
+    if (isNative()) {
+      requestNotificationPermissions().then((granted) => {
+        if (granted && savedReminders) {
+          syncRemindersToNative(JSON.parse(savedReminders));
+        }
+      });
+    }
     if (savedReminders) {
-      setReminders(JSON.parse(savedReminders));
+      const parsed = JSON.parse(savedReminders);
+      setReminders(parsed);
+      if (isNative()) {
+        syncRemindersToNative(parsed);
+      } else {
+        syncRemindersToSW(parsed);
+      }
     }
   }, []);
+
+  useEffect(() => {
+    if (isNative()) {
+      syncRemindersToNative(reminders);
+    } else {
+      syncRemindersToSW(reminders);
+    }
+  }, [reminders]);
 
   // Check reminders every minute
   useEffect(() => {
@@ -32,6 +67,7 @@ function ReminderScreen({ patient }) {
         if (reminder.time === currentTime && !reminder.completed && !notifiedReminders.has(reminder.id)) {
           setNotificationPopup(reminder);
           setNotifiedReminders(prev => new Set([...prev, reminder.id]));
+          triggerReminderNotification(reminder);
         }
       });
     };
@@ -83,15 +119,27 @@ function ReminderScreen({ patient }) {
   const handleDeleteReminder = (id) => {
     const updatedReminders = reminders.filter(r => r.id !== id);
     saveReminders(updatedReminders);
+    if (isNative()) {
+      cancelNativeReminder(id);
+    } else {
+      cancelReminderInSW(id);
+    }
   };
 
   return (
     <div className="reminder-page">
       <div className="reminder-container">
         <div className="reminder-content">
+          <div className="top-back-row">
+            <TopBackButton to="/dashboard" />
+          </div>
           <div className="reminder-header">
             <h1 className="page-title">Daily Reminders</h1>
             <p className="page-subtitle">Stay on track with your tasks</p>
+            <div className={`offline-badge ${isOnline ? 'online' : 'offline'}`}>
+              {isOnline ? <Wifi size={16} /> : <WifiOff size={16} />}
+              <span>{isOnline ? 'Online' : 'Offline'}</span>
+            </div>
           </div>
 
           <div className="reminder-stats">

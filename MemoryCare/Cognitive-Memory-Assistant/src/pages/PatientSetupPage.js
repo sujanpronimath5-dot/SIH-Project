@@ -4,8 +4,20 @@ import { ArrowRight } from 'lucide-react';
 import '../styles/PatientSetupPage.css';
 import { STRINGS as SETUP_STRINGS } from '../i18nReact';
 import { getAppLanguage } from '../i18n';
-import { stopSpeaking } from '../services/voice';
+import { speak, setVoiceLang, stopSpeaking } from '../services/voice';
 import { registerPatient } from '../services/patientRegistry';
+
+const LANGUAGE_OPTIONS = [
+  { code: 'brx', label: 'Bodo' },
+  { code: 'kha', label: 'Khasi' },
+  { code: 'grt', label: 'Garo' },
+  { code: 'lus', label: 'Mizo' },
+  { code: 'en', label: 'English' },
+  { code: 'hi', label: 'Hindi' },
+  { code: 'as', label: 'Assamese' },
+  { code: 'bn', label: 'Bengali' },
+  { code: 'mni', label: 'Manipuri / Meitei' },
+];
 
 const INDIAN_STATES = [
   'Andhra Pradesh',
@@ -45,7 +57,7 @@ function setupT(lang, key) {
 
 function PatientSetupPage({ setPatient }) {
   const navigate = useNavigate();
-  const lang = getAppLanguage();
+  const [lang, setLang] = useState(() => getAppLanguage());
   const [formData, setFormData] = useState({
     name: '',
     age: '',
@@ -57,8 +69,10 @@ function PatientSetupPage({ setPatient }) {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
+    setVoiceLang(lang);
+    speak(setupT(lang, 'setupSubtitle'));
     return () => stopSpeaking();
-  }, []);
+  }, [lang]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -74,7 +88,10 @@ function PatientSetupPage({ setPatient }) {
     }
   };
 
-
+  const handleLanguagePick = (code) => {
+    localStorage.setItem('preferredLang', code);
+    setLang(code);
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -124,9 +141,35 @@ function PatientSetupPage({ setPatient }) {
     <div className="patient-setup-container">
       <div className="patient-setup-content">
         <h1 className="setup-title">{setupT(lang, 'setupTitle')}</h1>
-        <p className="setup-subtitle">{setupT(lang, 'setupSubtitle')}</p>
+        <p className="setup-subtitle">
+          {setupT(lang, 'setupSubtitle')}{' '}
+          <button
+            type="button"
+            className="speak-btn"
+            style={{ padding: '4px 10px', fontSize: '0.9rem', marginLeft: '8px' }}
+            onClick={() => speak(setupT(lang, 'setupSubtitle'))}
+          >
+            🔊 {setupT(lang, 'speak')}
+          </button>
+        </p>
 
         <form className="setup-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="language" className="form-label">{setupT(lang, 'language')}</label>
+            <select
+              id="language"
+              name="language"
+              value={lang}
+              onChange={(e) => handleLanguagePick(e.target.value)}
+              className="form-input"
+            >
+              {LANGUAGE_OPTIONS.map((opt) => (
+                <option key={opt.code} value={opt.code}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="form-group">
             <label htmlFor="name" className="form-label">{setupT(lang, 'yourName')}</label>
             <input

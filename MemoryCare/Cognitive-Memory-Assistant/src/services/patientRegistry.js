@@ -27,16 +27,22 @@ function nextPatientId(registry) {
 export function registerPatient(data) {
   const registry = read(KEY_REGISTRY, []);
   const existing = data.patient_id && registry.find((p) => p.patient_id === data.patient_id);
+  const lang = data.language || data.preferred_language || localStorage.getItem('preferredLang') || 'en';
+  const emergencyContact = data.emergencyContact || data.emergency_contact || '';
+  const emergencyPhone = data.emergencyPhone || data.emergency_phone || '';
   const record = {
     patient_id: existing ? data.patient_id : nextPatientId(registry),
     name: data.name || 'Patient',
     age: Number(data.age) || 0,
     gender: data.gender || '—',
-    preferred_language: data.language || 'en',
+    preferred_language: lang,
+    language: lang,
     state: data.state || '',
     phone: data.phone || '',
-    emergency_contact: data.emergencyContact || '',
-    emergency_phone: data.emergencyPhone || '',
+    emergency_contact: emergencyContact,
+    emergencyContact: emergencyContact,
+    emergency_phone: emergencyPhone,
+    emergencyPhone: emergencyPhone,
   };
   if (existing) {
     const idx = registry.indexOf(existing);
@@ -45,7 +51,7 @@ export function registerPatient(data) {
     registry.push(record);
   }
   write(KEY_REGISTRY, registry);
-  return { ...data, patient_id: record.patient_id };
+  return { ...data, ...record };
 }
 
 export function ensureCurrentPatientRegistered() {
@@ -53,7 +59,24 @@ export function ensureCurrentPatientRegistered() {
   if (!patient) return null;
   const registry = read(KEY_REGISTRY, []);
   const registered = patient.patient_id && registry.find((p) => p.patient_id === patient.patient_id);
-  if (registered) return registered;
+  if (registered) {
+    const lang = patient.language || registered.language || registered.preferred_language || localStorage.getItem('preferredLang') || 'en';
+    const emergencyContact = patient.emergencyContact || registered.emergencyContact || registered.emergency_contact || '';
+    const emergencyPhone = patient.emergencyPhone || registered.emergencyPhone || registered.emergency_phone || '';
+    const merged = {
+      ...registered,
+      ...patient,
+      patient_id: registered.patient_id,
+      language: lang,
+      preferred_language: lang,
+      emergencyContact,
+      emergency_contact: emergencyContact,
+      emergencyPhone,
+      emergency_phone: emergencyPhone,
+    };
+    write('patientData', merged);
+    return merged;
+  }
   const updated = registerPatient(patient);
   write('patientData', updated);
   return updated;

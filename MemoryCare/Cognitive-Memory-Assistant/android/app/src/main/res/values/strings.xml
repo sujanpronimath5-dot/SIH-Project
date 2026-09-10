@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">MemoryCare</string>
+    <string name="title_activity_main">MemoryCare</string>
+    <string name="package_name">com.memorycare.app</string>
+    <string name="custom_url_scheme">com.memorycare.app</string>
+</resources>

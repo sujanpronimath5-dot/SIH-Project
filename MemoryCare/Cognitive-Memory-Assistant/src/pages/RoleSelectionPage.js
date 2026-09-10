@@ -22,15 +22,20 @@ function RoleSelectionPage({ setRole }) {
         }
       } else if (role === 'family') {
         localStorage.setItem('viewerRole', 'family');
-        const savedPatientId = localStorage.getItem('viewerPatientId');
-        if (savedPatientId) {
+        const savedFamily = localStorage.getItem('currentFamilyUser');
+        if (savedFamily) {
           navigate('/family-dashboard');
         } else {
-          navigate('/family/link-patient');
+          navigate('/family-login');
         }
       } else if (role === 'nurse') {
         localStorage.setItem('viewerRole', 'nurse');
-        navigate('/nurse-dashboard');
+        const savedNurse = localStorage.getItem('currentNurseUser');
+        if (savedNurse) {
+          navigate('/nurse-dashboard');
+        } else {
+          navigate('/nurse-login');
+        }
       }
     }, 300);
   };

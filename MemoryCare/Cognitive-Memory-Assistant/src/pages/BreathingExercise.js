@@ -4,6 +4,7 @@ import { t, getAppLanguage } from '../i18n';
 import { speak, setVoiceLang, stopSpeaking } from '../services/voice';
 import { saveBreathingSession } from '../services/gameStore';
 import Navigation from '../components/Navigation';
+import TopBackButton from '../components/TopBackButton';
 import '../styles/BreathingExercise.css';
 
 const INHALE_SECONDS = 4;
@@ -137,12 +138,10 @@ function BreathingExercise({ onBack }) {
   return (
     <div className="breathing-page">
       <header className="app-header breathing-header">
-        <h1>{t(lang, 'breathingName')}</h1>
-        <div className="header-actions">
-          <button className="btn btn-light" type="button" onClick={back}>
-            {t(lang, 'back')}
-          </button>
+        <div className="top-back-row breathing-top-back">
+          <TopBackButton onClick={back} />
         </div>
+        <h1>{t(lang, 'breathingName')}</h1>
       </header>
 
       <main className="screen breathing-screen">

@@ -1,0 +1,15 @@
+{
+  "appId": "com.memorycare.app",
+  "appName": "MemoryCare",
+  "webDir": "build",
+  "android": {
+    "allowMixedContent": true
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_memorycare",
+      "iconColor": "#2E7D32",
+      "sound": "beep.wav"
+    }
+  }
+}

@@ -31,6 +31,16 @@
   gap: 8px;
 }
 
+.family-user-indicator {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #5c4a3d;
+  background: #f5ece2;
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
 .family-header-btn {
   display: inline-flex;
   align-items: center;
@@ -42,6 +52,16 @@
   color: #fff;
   font-weight: 600;
   cursor: pointer;
+}
+
+.family-header-btn.secondary {
+  background: #f5ece2;
+  color: #5c4a3d;
+  border: 1px solid #dfd3c5;
+}
+
+.family-header-btn.secondary:hover {
+  background: #ebe0d3;
 }
 
 .family-header-btn:disabled {

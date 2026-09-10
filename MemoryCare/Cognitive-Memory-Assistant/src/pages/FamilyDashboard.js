@@ -2,9 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Activity, Clock, TrendingUp, RefreshCw, Users, User,
-  Image as ImageIcon, Bell, Link2, Loader,
+  Image as ImageIcon, Bell, Link2, Loader, LogOut,
 } from 'lucide-react';
 import '../styles/FamilyDashboard.css';
+import TopBackButton from '../components/TopBackButton';
 import viewerApi, {
   getSelectedPatientId,
   selectPatient,
@@ -85,6 +86,25 @@ function FamilyDashboard() {
   const [members, setMembers] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [activeAlert, setActiveAlert] = useState(() => {
+    try {
+      const raw = localStorage.getItem('activeEmergencyAlert');
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    const check = () => {
+      try {
+        const raw = localStorage.getItem('activeEmergencyAlert');
+        setActiveAlert(raw ? JSON.parse(raw) : null);
+      } catch {}
+    };
+    const interval = setInterval(check, 2500);
+    return () => clearInterval(interval);
+  }, []);
 
   const ensureSession = useCallback(async () => {
     await viewerApi.ensureSession('family');
@@ -152,6 +172,9 @@ function FamilyDashboard() {
   if (!selectedId && !loading) {
     return (
       <div className="family-page">
+        <div className="top-back-row">
+          <TopBackButton to="/role-selection" />
+        </div>
         <div className="family-dash-header">
           <h1 className="family-dash-title">Family Dashboard</h1>
           <p className="family-dash-subtitle">Stay connected with your loved one's cognitive journey</p>
@@ -172,16 +195,35 @@ function FamilyDashboard() {
   const percent = overview && overview.overall_progress ? overview.overall_progress.percent : 0;
   const gamesPlayed = overview && overview.overall_progress ? overview.overall_progress.games_played : 0;
 
+  const currentFamilyUser = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('currentFamilyUser'));
+    } catch (e) {
+      return null;
+    }
+  })();
+
   return (
     <div className="family-page">
+      <div className="top-back-row">
+        <TopBackButton to="/role-selection" />
+      </div>
       <div className="family-dash-header">
         <div>
           <h1 className="family-dash-title">Family Dashboard</h1>
           <p className="family-dash-subtitle">
             {patient ? `${patient.name} 's cognitive progress` : "Loved one's cognitive progress"}
           </p>
+          {currentFamilyUser && (
+            <div className="family-user-indicator">
+              <span>👤 Caregiver: <strong>{currentFamilyUser.name}</strong> ({currentFamilyUser.relation})</span>
+            </div>
+          )}
         </div>
         <div className="family-header-actions">
+          <button className="family-header-btn secondary" onClick={() => navigate('/family-login')} title="Switch Account or Login">
+            <LogOut size={16} /> Switch Account
+          </button>
           <button className="family-header-btn" onClick={goToLink}>
             <Link2 size={16} /> Connect
           </button>
@@ -190,6 +232,50 @@ function FamilyDashboard() {
           </button>
         </div>
       </div>
+
+      {activeAlert && (
+        <div style={{
+          background: '#FFEBEE',
+          border: '2px solid #D32F2F',
+          borderRadius: '12px',
+          padding: '14px 18px',
+          margin: '0 0 20px 0',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '12px',
+          boxShadow: '0 4px 14px rgba(211,47,47,0.25)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <span style={{ fontSize: '32px' }}>🚨</span>
+            <div>
+              <strong style={{ color: '#B71C1C', fontSize: '16px' }}>URGENT: PATIENT EMERGENCY ALERT TRIGGERED</strong>
+              <div style={{ color: '#333', fontSize: '14px', marginTop: '3px', lineHeight: '1.4' }}>
+                Patient <strong>{activeAlert.patientName}</strong> (ID: {activeAlert.patientId}) initiated an emergency call to <strong>{activeAlert.serviceName} ({activeAlert.number})</strong> at {new Date(activeAlert.timestamp).toLocaleTimeString()}
+                {activeAlert.state && ` · Location: ${activeAlert.state}`}
+              </div>
+            </div>
+          </div>
+          <button 
+            style={{
+              background: '#D32F2F',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '6px',
+              padding: '8px 16px',
+              fontWeight: '700',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap'
+            }}
+            onClick={() => {
+              localStorage.removeItem('activeEmergencyAlert');
+              setActiveAlert(null);
+            }}
+          >
+            Acknowledge
+          </button>
+        </div>
+      )}
 
       {error && (
         <div className="family-error">
@@ -200,11 +286,11 @@ function FamilyDashboard() {
 
       {linkedPatients.length > 1 && (
         <div className="family-patient-select">
-          <label htmlFor="family-patient-picker">Patient</label>
+          <label htmlFor="family-patient-picker">Patient (select by ID)</label>
           <select id="family-patient-picker" value={selectedId} onChange={handlePatientChange}>
             {linkedPatients.map((p) => (
               <option key={p.patient_id} value={p.patient_id}>
-                {p.name} · {p.age} yrs · {p.preferred_language}
+                {p.patient_id} · {p.name} · {p.age} yrs · {p.preferred_language}
               </option>
             ))}
           </select>

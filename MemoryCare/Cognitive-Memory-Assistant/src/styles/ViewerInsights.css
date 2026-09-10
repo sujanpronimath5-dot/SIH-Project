@@ -26,6 +26,42 @@
   color: #8a7a6e;
 }
 
+.nurse-user-badge {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #1b5e20;
+  background: #e8f5e9;
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid #c8e6c9;
+}
+
+.viewer-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.viewer-switch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border: 1px solid #dfd3c5;
+  border-radius: 10px;
+  background: #f5ece2;
+  color: #5c4a3d;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.viewer-switch-btn:hover {
+  background: #ebe0d3;
+}
+
 .viewer-refresh {
   display: inline-flex;
   align-items: center;
@@ -124,6 +160,36 @@
   font-size: 15px;
   color: #3a2e26;
   cursor: pointer;
+}
+
+.viewer-id-badge {
+  display: inline-block;
+  margin-top: 6px;
+  background: #fff3e6;
+  border: 1px solid #efd6bd;
+  color: #8a4b12;
+  border-radius: 999px;
+  padding: 3px 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.viewer-id-badge strong {
+  font-weight: 800;
+  color: #d85a30;
+  letter-spacing: 0.3px;
+}
+
+.viewer-search-list button .viewer-id-badge {
+  margin-top: 0;
+  margin-right: 8px;
+}
+
+.viewer-search-list button .viewer-patient-line {
+  display: block;
+  margin-top: 6px;
+  color: #5c4a3d;
+  font-size: 14px;
 }
 
 .viewer-search-list button:hover,

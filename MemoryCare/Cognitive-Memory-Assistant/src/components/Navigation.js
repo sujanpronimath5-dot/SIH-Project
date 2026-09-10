@@ -4,10 +4,10 @@ import { Home, Clock, Gamepad2, User, Phone } from 'lucide-react';
 import { t, getAppLanguage } from '../i18n';
 import '../styles/Navigation.css';
 
-function Navigation() {
+function Navigation({ lang: propLang }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const lang = getAppLanguage();
+  const lang = propLang || getAppLanguage();
 
   const isActive = (path) => location.pathname === path;
 

@@ -27,12 +27,52 @@
 }
 
 .dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
   background: linear-gradient(135deg, #D85A30 0%, #B84820 100%);
   color: var(--white);
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-xl);
   margin-bottom: var(--spacing-xl);
   box-shadow: 0 4px 15px rgba(216, 90, 48, 0.2);
+}
+
+.dashboard-language-switcher {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  align-self: flex-start;
+}
+
+.dashboard-lang-label {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #FFE6DB;
+}
+
+.dashboard-lang-select {
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #2D3748;
+  background: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-lang-select:focus {
+  box-shadow: 0 0 0 2px #FFE6DB;
 }
 
 .greeting-section {
@@ -47,8 +87,9 @@
 }
 
 .patient-name {
-  color: #E28364;
+  color: #FFE6DB;
   font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
 .time {
@@ -57,11 +98,39 @@
 }
 
 .patient-id {
-  margin: var(--spacing-xs) 0 0;
-  font-size: var(--font-size-md);
+  margin: var(--spacing-md) 0 0;
+  display: flex;
+  align-items: center;
+}
+
+.patient-id-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.22);
+  color: #FFFFFF;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+  font-size: var(--font-size-base);
   font-weight: 600;
-  color: #D85A30;
-  opacity: 0.95;
+}
+
+.patient-id-label {
+  color: #FFF2EB;
+  font-weight: 600;
+}
+
+.patient-id-value {
+  color: #FFFFFF;
+  font-weight: 800;
+  font-family: monospace, sans-serif;
+  letter-spacing: 1px;
+  background: rgba(0, 0, 0, 0.18);
+  padding: 2px 10px;
+  border-radius: 6px;
 }
 
 .features-grid {

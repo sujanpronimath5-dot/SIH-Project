@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { t, getAppLanguage } from '../i18n';
 import '../styles/PatientDashboard.css';
 import Navigation from '../components/Navigation';
+import OfflineLangAlert from '../components/OfflineLangAlert';
+import TopBackButton from '../components/TopBackButton';
 
 function PatientDashboard({ patient }) {
   const navigate = useNavigate();
-  const lang = getAppLanguage();
+  const lang = patient?.language || getAppLanguage();
 
   if (!patient) {
     return (
@@ -30,7 +32,7 @@ function PatientDashboard({ patient }) {
     { id: 'game', icon: '🎮', label: t(lang, 'navGames'), path: '/games', description: t(lang, 'featureGamesDesc') },
     { id: 'reminders', icon: '⏰', label: t(lang, 'navReminders'), path: '/reminders', description: t(lang, 'featureRemindersDesc') },
     { id: 'breathing', icon: '🌬️', label: t(lang, 'breathingName'), path: '/breathing', description: t(lang, 'featureBreathingDesc') },
-    { id: 'face', icon: '🔐', label: t(lang, 'faceLogin'), path: '/face-login', description: t(lang, 'featureFaceDesc') },
+    
     { id: 'emergency', icon: '🚨', label: t(lang, 'navSos'), path: '/emergency', description: t(lang, 'featureEmergencyDesc') },
     { id: 'profile', icon: '👤', label: t(lang, 'navProfile'), path: '/profile', description: t(lang, 'featureProfileDesc') },
   ];
@@ -39,15 +41,26 @@ function PatientDashboard({ patient }) {
     <div className="dashboard-page">
       <div className="dashboard-container">
         <div className="dashboard-content">
+          <OfflineLangAlert lang={lang} />
+          <div className="top-back-row">
+            <TopBackButton to="/role-selection" />
+          </div>
           <div className="dashboard-header">
             <div className="greeting-section">
               <h1 className="greeting">
                 {getGreeting()}, <span className="patient-name">{patient.name}</span>
               </h1>
               <p className="time">
-                {new Date().toLocaleDateString(lang === 'en' ? 'en-US' : 'today', { weekday: 'long', month: 'long', day: 'numeric' })}
+                {new Date().toLocaleDateString(lang === 'en' ? 'en-US' : undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
               </p>
-              {patient.patient_id && <p className="patient-id">Patient ID: {patient.patient_id}</p>}
+              {patient.patient_id && (
+                <div className="patient-id">
+                  <span className="patient-id-badge">
+                    <span className="patient-id-label">{t(lang, 'patientId')}:</span>{' '}
+                    <span className="patient-id-value">{patient.patient_id}</span>
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -71,7 +84,7 @@ function PatientDashboard({ patient }) {
           </div>
         </div>
       </div>
-      <Navigation />
+      <Navigation lang={lang} />
     </div>
   );
 }

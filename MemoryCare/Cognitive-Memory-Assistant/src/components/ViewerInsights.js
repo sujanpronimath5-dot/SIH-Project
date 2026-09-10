@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Activity, Clock, TrendingUp, RefreshCw, Users } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Activity, Clock, TrendingUp, RefreshCw, Users, LogOut } from 'lucide-react';
 import '../styles/ViewerInsights.css';
+import TopBackButton from './TopBackButton';
 import viewerApi, {
   getSelectedPatientId,
   selectPatient,
@@ -43,6 +45,15 @@ function formatTime(seconds) {
 }
 
 function ViewerInsights({ role }) {
+  const navigate = useNavigate();
+  const currentNurseUser = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('currentNurseUser'));
+    } catch (e) {
+      return null;
+    }
+  })();
+
   const [patients, setPatients] = useState([]);
   const [patientsError, setPatientsError] = useState('');
   const [overview, setOverview] = useState(null);
@@ -135,14 +146,29 @@ function ViewerInsights({ role }) {
 
   return (
     <div className="viewer-page">
+      <div className="top-back-row">
+        <TopBackButton to="/role-selection" />
+      </div>
       <div className="viewer-header">
         <div>
           <h1 className="viewer-title">{roleLabel} Dashboard</h1>
           <p className="viewer-subtitle">Patient progress & cognitive game performance</p>
+          {role === 'nurse' && currentNurseUser && (
+            <div className="nurse-user-badge">
+              <span>🩺 Nurse: <strong>{currentNurseUser.name}</strong> ({currentNurseUser.hospitalName})</span>
+            </div>
+          )}
         </div>
-        <button className="viewer-refresh" onClick={handleRetry} disabled={loadingPatients || loadingOverview}>
-          <RefreshCw size={16} /> Refresh
-        </button>
+        <div className="viewer-header-actions">
+          {role === 'nurse' && (
+            <button className="viewer-switch-btn" onClick={() => navigate('/nurse-login')} title="Switch Account or Login">
+              <LogOut size={16} /> Switch Account
+            </button>
+          )}
+          <button className="viewer-refresh" onClick={handleRetry} disabled={loadingPatients || loadingOverview}>
+            <RefreshCw size={16} /> Refresh
+          </button>
+        </div>
       </div>
 
       {patientsError && (
@@ -158,7 +184,7 @@ function ViewerInsights({ role }) {
           id="viewer-patient-picker"
           className="viewer-patient-search"
           type="text"
-          value={query || (selectedPatient ? `${selectedPatient.patient_id} · ${selectedPatient.name}` : '')}
+          value={query || (selectedPatient ? `${selectedPatient.name} · ${selectedPatient.age} (${selectedPatient.gender})` : '')}
           onChange={(e) => {
             setQuery(e.target.value);
             setOpen(true);
@@ -169,6 +195,9 @@ function ViewerInsights({ role }) {
           disabled={!patients.length}
           autoComplete="off"
         />
+        {selectedPatient && !query && (
+          <div className="viewer-id-badge">Patient ID: <strong>{selectedPatient.patient_id}</strong></div>
+        )}
         {open && patients.length > 0 && (
           filteredPatients.length === 0 ? (
             <div className="viewer-search-empty">No patient matches “{query}”</div>
@@ -182,7 +211,10 @@ function ViewerInsights({ role }) {
                     onClick={() => pickPatient(p.patient_id)}
                     onMouseDown={(e) => e.preventDefault()}
                   >
-                    {p.patient_id} · {p.name} · {p.age} ({p.gender}) · {p.preferred_language}
+                    <span className="viewer-id-badge">Patient ID: <strong>{p.patient_id}</strong></span>
+                    <span className="viewer-patient-line">
+                      {p.name} · {p.age} ({p.gender}) · {p.preferred_language}
+                    </span>
                   </button>
                 </li>
               ))}

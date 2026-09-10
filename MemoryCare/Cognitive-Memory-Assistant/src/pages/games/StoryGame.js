@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { t, tf } from '../../i18n';
 import { clampLevel } from '../../services/adaptive';
-import { speak, speakSequence, setVoiceLang, stopSpeaking } from '../../services/voice';
+import { speak, setVoiceLang, stopSpeaking, registerRepeatHandler } from '../../services/voice';
 import { GAME_TYPES, applyAdaptiveAndSave } from '../../services/gameStore';
 import storyContent from '../../content/storyContent';
 import { GameHeader, GameSummaryView, levelSubtitle } from './GameParts';
 
 function pickStory(level, lang = 'en') {
-  const poolSet = storyContent[lang];
+  const poolSet = storyContent[lang] || storyContent.en;
   if (!poolSet) {
     return { id: `missing-${lang}`, text: `[story.content]`, questions: [] };
   }
-  const pool = poolSet[level] || poolSet[1];
+  const pool = poolSet[level] || poolSet[1] || storyContent.en[level] || storyContent.en[1];
   if (!pool) {
     return { id: `missing-${lang}-level-${level}`, text: `[story.level.${level}]`, questions: [] };
   }
@@ -54,25 +54,68 @@ function StoryGame({ lang, level, onHome }) {
 
   const state = S.current;
 
+  const handleRepeat = () => {
+    stopSpeaking();
+    setVoiceLang(state.lang);
+    speakCurrentContext();
+  };
+
   useEffect(() => {
     setVoiceLang(state.lang);
     speakCurrentContext();
-    return () => stopSpeaking();
+    const unregister = registerRepeatHandler(() => {
+      handleRepeat();
+    });
+    return () => {
+      unregister();
+      stopSpeaking();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const speechForQuestion = (index) => {
     const question = state.questions[index];
     if (!question) return [];
+    const prefix = state.lang === 'hi' ? 'विकल्प'
+      : state.lang === 'bn' ? 'বিকল্প'
+      : state.lang === 'as' ? 'বিকল্প'
+      : state.lang === 'mni' ? 'অপশন'
+      : state.lang === 'brx' ? 'थाखाय'
+      : state.lang === 'kha' ? 'Kyntien'
+      : state.lang === 'grt' ? 'Bikolpo'
+      : state.lang === 'lus' ? 'Thlan tur'
+      : 'Option';
     return [
       question.question,
       ...question.options.map((option, optionIndex) =>
-        `Option ${String.fromCharCode(65 + optionIndex)}: ${option.text}`),
+        `${prefix} ${optionIndex + 1}: ${option.text}`),
     ];
   };
 
-  const speakCurrentContext = () => {
-    speakSequence([state.story.text, ...speechForQuestion(state.questionIndex)]);
+  const speakOptions = (index, onDone) => {
+    const question = state.questions[index];
+    if (!question || !question.options.length) {
+      if (onDone) onDone();
+      return;
+    }
+    const chainOption = (i) => {
+      if (i >= question.options.length) {
+        if (onDone) onDone();
+        return;
+      }
+      speak(speechForQuestion(index)[i + 1], () => chainOption(i + 1));
+    };
+    chainOption(0);
+  };
+
+  const speakCurrentContext = (onDone = null) => {
+    const question = state.questions[state.questionIndex];
+    if (!question) {
+      if (onDone) onDone();
+      return;
+    }
+    const speakQuestion = () => speak(question.question, () => speakOptions(state.questionIndex, onDone));
+    speak(state.story.text, speakQuestion);
   };
 
   const restart = (nextLevel) => {
@@ -110,15 +153,16 @@ function StoryGame({ lang, level, onHome }) {
       forceRender();
       return;
     }
-    speak(t(state.lang, 'nice'));
-    state.questionIndex += 1;
-    if (state.questionIndex >= state.questions.length) {
-      finish();
-      return;
-    }
-    state.questionStart = Date.now();
-    speakCurrentContext();
-    forceRender();
+    speak(t(state.lang, 'nice'), () => {
+      state.questionIndex += 1;
+      if (state.questionIndex >= state.questions.length) {
+        finish();
+        return;
+      }
+      state.questionStart = Date.now();
+      speakCurrentContext();
+      forceRender();
+    });
   };
 
   const finish = async () => {
@@ -183,6 +227,7 @@ function StoryGame({ lang, level, onHome }) {
         subtitle={`${levelSubtitle(state.lang, state.activeLevel)} · ${tf(state.lang, 'storyQuestionOf', { n: state.questionIndex + 1, total: state.questions.length })}`}
         onBack={onHome}
         speechControls
+        onRepeat={handleRepeat}
       />
       <main className="screen">
         <p className="instruction">{t(state.lang, 'storyHelp')}</p>

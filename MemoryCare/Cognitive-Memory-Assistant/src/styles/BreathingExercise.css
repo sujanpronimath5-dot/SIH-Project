@@ -17,6 +17,23 @@
   text-align: center;
 }
 
+.breathing-page .breathing-top-back {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 12px;
+}
+
+.breathing-page .breathing-top-back .top-back-btn {
+  background: #ffffff;
+  color: #d85a30;
+}
+
+.breathing-page .breathing-top-back .top-back-btn:hover,
+.breathing-page .breathing-top-back .top-back-btn:focus-visible {
+  background: #faece7;
+  color: #3b3b3f;
+}
+
 .breathing-page .breathing-header h1 {
   margin: 0;
   font-size: 26px;

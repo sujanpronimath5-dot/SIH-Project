@@ -9,6 +9,8 @@ import FaceNameGame from './games/FaceNameGame';
 import StoryGame from './games/StoryGame';
 import { GameHeader } from './games/GameParts';
 import Navigation from '../components/Navigation';
+import OfflineLangAlert from '../components/OfflineLangAlert';
+import TopBackButton from '../components/TopBackButton';
 import '../styles/GameScreen.css';
 import '../styles/Games.css';
 
@@ -26,10 +28,10 @@ const GAME_META = {
   [GAME_TYPES.remember_my_story]: { nameKey: 'storyName', blurbKey: 'storyBlurb' },
 };
 
-function GameScreen() {
+function GameScreen({ patient }) {
   const navigate = useNavigate();
   const { gameId } = useParams();
-  const lang = getAppLanguage();
+  const lang = patient?.language || getAppLanguage();
   const [phase, setPhase] = useState('pick'); // 'pick' | 'play'
   const [levels, setLevels] = useState(null);
   const [picked, setPicked] = useState(1);
@@ -68,6 +70,10 @@ function GameScreen() {
     return (
       <div className="game-page">
         <div className="game-container">
+          <div className="top-back-row">
+            <TopBackButton to="/games" />
+          </div>
+          <OfflineLangAlert lang={lang} />
           <div className="game-content">
             <Component
               key={sessionKey}
@@ -77,7 +83,7 @@ function GameScreen() {
             />
           </div>
         </div>
-        <Navigation />
+        <Navigation lang={lang} />
       </div>
     );
   }
@@ -87,6 +93,7 @@ function GameScreen() {
   return (
     <div className="game-page">
       <div className="game-container">
+        <OfflineLangAlert lang={lang} />
         <div className="game-content">
           <GameHeader lang={lang} title={t(lang, meta.nameKey)} subtitle={t(lang, meta.blurbKey)} onBack={goBackToGames} />
           <main className="screen">

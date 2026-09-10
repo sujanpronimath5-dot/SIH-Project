@@ -8,12 +8,25 @@ export function levelSubtitle(lang, level) {
   return `${t(lang, 'level')} ${n} · ${t(lang, levelTier(n))}`;
 }
 
-export function GameHeader({ lang, title, subtitle, onBack, speechControls = false }) {
+export function GameHeader({ lang, title, subtitle, onBack, speechControls = false, onRepeat = null }) {
   const [paused, setPaused] = useState(isSpeechPaused());
+  const [repeatCooldown, setRepeatCooldown] = useState(false);
 
   const handleToggle = () => {
-    toggleSpeaking();
-    setPaused(isSpeechPaused());
+    const isPaused = toggleSpeaking();
+    setPaused(isPaused);
+  };
+
+  const handleRepeatClick = () => {
+    if (repeatCooldown) return;
+    setRepeatCooldown(true);
+    setTimeout(() => setRepeatCooldown(false), 350);
+    setPaused(false);
+    if (onRepeat) {
+      onRepeat();
+    } else {
+      repeatLast();
+    }
   };
 
   return (
@@ -30,7 +43,7 @@ export function GameHeader({ lang, title, subtitle, onBack, speechControls = fal
         ) : null}
         {speechControls ? (
           <>
-            <button className="header-btn" type="button" onClick={repeatLast}>
+            <button className="header-btn" type="button" onClick={handleRepeatClick}>
               {t(lang, 'repeat')}
             </button>
             <button className="header-btn" type="button" onClick={handleToggle}>

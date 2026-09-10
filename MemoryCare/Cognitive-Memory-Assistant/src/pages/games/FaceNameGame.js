@@ -56,14 +56,13 @@ function FaceNameGame({ lang, level, onHome }) {
   const state = S.current;
 
   const speakRound = (st = state) => {
-    const round = st.rounds[st.roundIndex];
-    if (round) {
-      speakSequence([
-        round.prompt,
-        ...round.choices.map((person, index) =>
-          `Option ${String.fromCharCode(65 + index)}: ${choiceText(st.lang, person, st.activeLevel)}`),
-      ]);
-    }
+    const round = st.rounds && st.rounds[st.roundIndex];
+    if (!round) return;
+    const speakOptions = () => speakSequence(
+      round.choices.map((person, index) =>
+        `Option ${String.fromCharCode(65 + index)}: ${choiceText(st.lang, person, st.activeLevel) || person.name}`)
+    );
+    speak(round.prompt, speakOptions);
   };
 
   const restart = (nextLevel) => {

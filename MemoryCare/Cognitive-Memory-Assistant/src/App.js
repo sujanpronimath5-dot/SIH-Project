@@ -10,14 +10,17 @@ import BreathingExercise from './pages/BreathingExercise';
 import MyProgress from './pages/MyProgress';
 import ReminderScreen from './pages/ReminderScreen';
 import VoiceAssistantScreen from './pages/VoiceAssistantScreen';
-import FaceLoginScreen from './pages/FaceLoginScreen';
+
 import EmergencyCallScreen from './pages/EmergencyCallScreen';
 import ProfileScreen from './pages/ProfileScreen';
 import FamilyDashboard from './pages/FamilyDashboard';
 import NurseDashboard from './pages/NurseDashboard';
 import LinkPatientPage from './pages/LinkPatientPage';
 import FamilyMemberPage from './pages/FamilyMemberPage';
+import FamilyLoginPage from './pages/FamilyLoginPage';
+import NurseLoginPage from './pages/NurseLoginPage';
 import { ensureCurrentPatientRegistered } from './services/patientRegistry';
+import { prewarmBhashiniConfig } from './services/bhashiniTTS';
 import './styles/App.css';
 
 function App() {
@@ -34,6 +37,8 @@ function App() {
     if (savedRole) {
       setRole(savedRole);
     }
+    // Pre-warm Bhashini pipeline config for faster TTS
+    prewarmBhashiniConfig();
   }, []);
 
   return (
@@ -43,17 +48,18 @@ function App() {
           <Route path="/" element={<WelcomePage />} />
           <Route path="/role-selection" element={<RoleSelectionPage setRole={setRole} />} />
           <Route path="/patient-setup" element={<PatientSetupPage setPatient={setPatient} />} />
-          <Route path="/dashboard" element={<PatientDashboard patient={patient} />} />
-          <Route path="/games" element={<GamesPage />} />
+          <Route path="/dashboard" element={<PatientDashboard patient={patient} setPatient={setPatient} />} />
+          <Route path="/games" element={<GamesPage patient={patient} />} />
           <Route path="/game/:gameId" element={<GameScreen patient={patient} />} />
           <Route path="/breathing" element={<BreathingExercise />} />
           <Route path="/progress" element={<MyProgress />} />
           <Route path="/reminders" element={<ReminderScreen patient={patient} />} />
           <Route path="/voice-assistant" element={<VoiceAssistantScreen patient={patient} />} />
-          <Route path="/face-login" element={<FaceLoginScreen />} />
           <Route path="/emergency" element={<EmergencyCallScreen patient={patient} />} />
           <Route path="/profile" element={<ProfileScreen patient={patient} setPatient={setPatient} />} />
+          <Route path="/family-login" element={<FamilyLoginPage />} />
           <Route path="/family-dashboard" element={<FamilyDashboard />} />
+          <Route path="/nurse-login" element={<NurseLoginPage />} />
           <Route path="/nurse-dashboard" element={<NurseDashboard />} />
           <Route path="/family/link-patient" element={<LinkPatientPage />} />
           <Route path="/family/family-members" element={<FamilyMemberPage />} />

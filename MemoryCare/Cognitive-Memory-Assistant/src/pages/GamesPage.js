@@ -4,6 +4,7 @@ import { t, getAppLanguage } from '../i18n';
 import { GAME_TYPES, getPlayLevel } from '../services/gameStore';
 import { levelSubtitle } from './games/GameParts';
 import Navigation from '../components/Navigation';
+import TopBackButton from '../components/TopBackButton';
 import '../styles/GamesPage.css';
 import '../styles/Games.css';
 
@@ -14,9 +15,9 @@ const GAMES = [
   { id: GAME_TYPES.remember_my_story, nameKey: 'storyName', blurbKey: 'storyBlurb', category: 'story' },
 ];
 
-function GamesPage() {
+function GamesPage({ patient }) {
   const navigate = useNavigate();
-  const lang = getAppLanguage();
+  const lang = patient?.language || getAppLanguage();
   const [levels, setLevels] = useState({});
 
   useEffect(() => {
@@ -33,6 +34,9 @@ function GamesPage() {
   return (
     <div className="games-page">
       <div className="games-container">
+        <div className="top-back-row">
+          <TopBackButton to="/dashboard" />
+        </div>
         <div className="games-grid">
           {GAMES.map((game) => {
             const level = levels[game.id] || 1;
@@ -54,7 +58,7 @@ function GamesPage() {
           })}
         </div>
       </div>
-      <Navigation />
+      <Navigation lang={lang} />
     </div>
   );
 }
