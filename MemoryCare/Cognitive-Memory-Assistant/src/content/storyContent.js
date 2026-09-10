@@ -2,6 +2,7 @@ import assameseStoryContent from "./Assamese story.js";
 import bengaliStoryContent from "./Bengali story.js";
 import hindiStoryContent from "./Hindi story.js";
 import manipuriStoryContent from "./manipuri story.js";
+import bodoStoryContent from "./Bodo story.js";
 
 /* eslint-disable no-dupe-keys */
 // The translation tables below are generated from raw source material and
@@ -1526,6 +1527,7 @@ const storyContent = {
   as: assameseStoryContent,
   bn: bengaliStoryContent,
   mni: manipuriStoryContent,
+  brx: bodoStoryContent,
 };
 
 export default storyContent;
